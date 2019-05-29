@@ -1,52 +1,60 @@
-var db = require("../models");
+const db = require("../models");
 
 // Routes =============================================================
 module.exports = function(app) {
 
  
  app.get("/api/products", function(req, res) {
-   db.Todo.findAll({}).then(function(dbTodo) {
-     res.json(dbTodo);
+   db.Product.findAll({}).then(function(dbProduct) {
+     res.json(dbProduct);
+   }).catch(function(error){
+     res.json({error: error});
    });
 
  });
+ 
+ app.get("/api/products/:id", function(req, res) {
+  db.Product.findOne({
+    where: {
+      id: req.params.id
+    }
+  }).then(function(dbProduct) {
+    res.json(dbProduct);
+  });
+});
+
 
  app.post("/api/products", function(req, res) {
    
-   db.Todo.create({
+   db.Product.create({
      text: req.body.text,
      complete: req.body.complete
-   }).then(function(dbTodo) {
-     res.json(dbTodo);
+   }).then(function(dbProduct) {
+     res.json(dbProduct);
    });
 
  });
 
 
- app.delete("/api/todos/:id", function(req, res) {
-   db.Todo.destroy({
+ app.delete("/api/products/:id", function(req, res) {
+   db.bamazon.destroy({
      where: {
        id: req.params.id
      }
    })
-     .then(function(dbTodo) {
-       res.json(dbTodo);
+     .then(function(dbProduct) {
+       res.json(dbProduct);
      });
 
  });
 
- app.put("/api/products", function(req, res) {
+ app.put("/api/products/:id", function(req, res) {
    
-   db.Bamazon.update({
-     text: req.body.text,
-     complete: req.body.complete
-   }, {
-     where: {
-       id: req.body.id
-     }
-   })
-     .then(function(dbTodo) {
-       res.json(dbTodo);
+   db.Product.update(
+     req.body,
+     {where: { id: req.params.id} }
+   ).then(function(dbProduct) {
+       res.json(dbProduct);
      });
 
  });
